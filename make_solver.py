@@ -3,6 +3,7 @@ import importlib
 import torch.nn as nn
 import torch.optim as optim
 from utils import read_json
+from criterion import FocalLoss
 
 
 def make_solver(args, net, train_loader, val_loader):
@@ -24,10 +25,14 @@ def make_solver(args, net, train_loader, val_loader):
 
 
 def set_criterion(args):
+    criterion = None
     if args.criterion == "MSE":
         criterion = nn.MSELoss()
-    else:
+    elif args.criterion == "CEE":
         criterion = nn.CrossEntropyLoss()
+    elif args.criterion == "FOCAL":
+        criterion = FocalLoss(gamma=2)
+    assert criterion is not None, "criterion must be one of these values ['MSE', 'CEE', 'FOCAL']"
     return criterion
 
 

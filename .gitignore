@@ -1,0 +1,10 @@
+# ignore extra
+.vscode/
+__pycache__/
+
+# venv
+.eeg/
+
+# experiments
+result/
+
