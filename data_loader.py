@@ -8,17 +8,30 @@ class PretrainDataset(Dataset):
     def __init__(self, args):
         self.args = args
         self.load_data()
+        # self.preprocess()
         self.torch_form()
+    
+    def load_np_data(self, s, session="1"):
+        assert session in ["1", "2"]
+        data_type = "train" if session == "1" else "test"
+        X_path = f"./data/S{s:02}_{data_type}_X.npy"
+        y_path = f"./data/S{s:02}_train_y.npy" if data_type == "train" else f"./answer/S{s:02}_y_test.npy"
+        return np.load(X_path), np.load(y_path)
 
     def load_data(self):
         s = self.args.train_subject[0]
         if self.args.phase == "train":
             X, y = [], []
             for subject_number in range(1, 10):
-                X_path = f"./data/S{subject_number:02}_train_X.npy"
-                y_path = f"./data/S{subject_number:02}_train_y.npy"
-                X.append(np.load(X_path))
-                y.append(np.load(y_path))
+                if not self.args.load_all or s != subject_number:
+                    np_X, np_y = self.load_np_data(subject_number, "1")
+                    X.append(np_X)
+                    y.append(np_y)
+                    if self.args.load_all:
+                        np_X, np_y = self.load_np_data(subject_number, "2")
+                        X.append(np_X)
+                        y.append(np_y)
+
             self.X = np.concatenate(X)
             self.y = np.concatenate(y)
         else:
@@ -26,6 +39,41 @@ class PretrainDataset(Dataset):
             self.y = np.load(f"./answer/S{s:02}_y_test.npy")
         if len(self.X.shape) <= 3:
             self.X = np.expand_dims(self.X, axis=1)
+
+    def preprocess(self):
+        if self.args.phase == "train":
+            aug_data, aug_label = self.interaug(self.X, self.y)
+            self.X, self.y = aug_data, aug_label
+    
+    def interaug(self, timg, label):
+        aug_data = []
+        aug_label = []
+        for cls4aug in range(4):
+            cls_idx = np.where(label == cls4aug + 1)
+            tmp_data = timg[cls_idx]
+            tmp_label = label[cls_idx]
+            if tmp_data.shape[0] == 0:
+                print(f"cls_idx: {cls_idx}, tmp_data shape[0] == 0. skip interaug")
+                continue
+
+            tmp_aug_data = np.zeros((int(self.args.batch_size / 4), 1, 22, 1000))
+            for ri in range(int(self.args.batch_size / 4)):
+                for rj in range(8):
+                    rand_idx = np.random.randint(0, tmp_data.shape[0], 8)
+                    tmp_aug_data[ri, :, :, rj * 125:(rj+1)*125] = tmp_data[rand_idx[rj], :, :, rj*125:(rj+1)*125]
+            
+            aug_data.append(tmp_aug_data)
+            aug_label.append(tmp_label[:int(self.args.batch_size / 4)])
+
+        if len(aug_data) == 0:
+            raise ValueError("No Augmented data generated")
+        aug_data = np.concatenate(aug_data)
+        aug_label = np.concatenate(aug_label)
+        aug_shuffle = np.random.permutation(len(aug_data))
+        aug_data = aug_data[aug_shuffle, :, :]
+        aug_label = aug_label[aug_shuffle]
+
+        return aug_data, aug_label
 
     def torch_form(self):
         self.X = torch.FloatTensor(self.X)
@@ -55,7 +103,7 @@ class CustomDataset(Dataset):
             self.y = np.load(f"./answer/S{s:02}_y_test.npy")
         if len(self.X.shape) <= 3:
             self.X = np.expand_dims(self.X, axis=1)
-
+        
     def torch_form(self):
         self.X = torch.FloatTensor(self.X)
         self.y = torch.LongTensor(self.y)

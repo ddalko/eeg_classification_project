@@ -42,6 +42,7 @@ def arg():
     parser.add_argument("--band", type=band_list, default=[[0, 42]], help="Please connect it with a comma.")
     parser.add_argument("--chans", default="all", type=str2list, help="Please connect it with a comma.")
     parser.add_argument("--labels", default="all", type=str2list_int, help="Please connect it with a comma.")
+    parser.add_argument("--load_all", action="store_true", default=False, help="Only for pretraining mode")
 
     # Train
     parser.add_argument("--criterion", default="CEE", help="Please enter loss function you want to use.")
@@ -63,13 +64,11 @@ def arg():
     parser.add_argument("--ratio", type=float)
 
     # Miscellaneous
-    parser.add_argument("--gpu", default=1, help="multi / 0 / 1 / cpu")
+    parser.add_argument("--gpu", default=None, help="multi / 0 / 1 / cpu")
     parser.add_argument("--seed", type=int)
     parser.add_argument("--print_step", default=5, type=int, help="Number of print results per epoch.")
     # parser.add_argument('--subprocess', action='store_true')
     parser.add_argument("--signature", help="To filter the results.")
-
-    parser.add_argument("--extractor", default="EEGNet")
 
     # Parsing
     args = parser.parse_args()
@@ -84,7 +83,7 @@ def arg():
         args.save_path = os.path.dirname(os.path.dirname(args.train_cont_path))
     else:
         args.save_path = f"./result/{args.stamp}/{args.train_subject[0]}"
-        if args.mode == "pretrain":
+        if args.mode == "pretrain" and not args.load_all:
             args.save_path = f"./result/{args.stamp}"
         createFolder(args.save_path)
 

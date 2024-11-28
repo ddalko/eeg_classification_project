@@ -8,7 +8,9 @@ from Net.EEGConformer_net import Conformer
 def build_net(args, shape):
     device = torch.device("cpu")
     if torch.backends.mps.is_available():
-        device = torch.device("mps")
+        device = torch.device("mps")  # for Mac
+    elif torch.cuda.is_available():
+        device = f"cuda:{args.gpu}"
 
     print(f"Using device: {device}")
     print("[Build Net]")
@@ -26,16 +28,18 @@ def build_net(args, shape):
             net.load_state_dict(param["net_state_dict"])
     elif args.net == "EEGConformer":
         net = Conformer()
+        if args.mode == "train":
+            param = torch.load(args.pretrained_path, map_location=device)
+            net.load_state_dict(param["net_state_dict"])
     else:
         raise "args.net must be one of values ['EEGNet', 'EEGConformer']"
 
     # Set GPU
     if args.gpu != "cpu":
-        assert torch.backends.mps.is_available(), "Check MPS"
+        check_gpu = torch.backends.mps.is_available() or torch.cuda.is_available()
+        assert check_gpu, "Check MPS or NVIDIA-GPU"
         if args.gpu == "multi":
             net = nn.DataParallel(net)
-        # else:
-        #     torch.cuda.set_device(device)
         net.to(device)
 
     # Set CPU

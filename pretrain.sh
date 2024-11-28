@@ -1,7 +1,7 @@
-#!/bin/zsh
+#!/bin/bash
 
-# EEGNet finetuning
-# python main.py --net=EEGNet --label=0,1,2,3 --gpu=0 --sch=exp --gamma=0.999 --epoch=50 -lr=2e-4 --stamp=baseline --seed=42 --batch_size=72 -wd=2e-4 --train_subject=9
+# EEGConformer pretraining with session 1,2 data (same as EEGNet pretraining configuration)
 
-# EEGConformer pretraining
-python main.py --mode=pretrain --net=EEGConformer --label=0,1,2,3 --gpu=0 --sch=cos --gamma=0.999 --epoch=500 -lr=2e-3 --stamp=pretrained --seed=42 -wd=2e-3 --train_subject=9
+for subject in {1..9}; do
+    python main.py --mode=pretrain --load_all --net=EEGConformer --band=0,40 --label=0,1,2,3 --gpu=0 --sch=cos --eta_min=0 --epoch=500 -lr=2e-3 --stamp=241128_pretrained_all --seed=42 -wd=2e-3 --train_subject=$subject --batch_size=576 --criterion=FOCAL
+done

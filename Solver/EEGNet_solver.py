@@ -20,6 +20,8 @@ class Solver:
         self.device = torch.device("cpu")
         if torch.backends.mps.is_available():
             self.device = torch.device("mps")
+        elif torch.cuda.is_available():
+            self.device = f"cuda:{args.gpu}"
 
     def train(self):
         log_tmp = {key: [] for key in self.log_dict.keys() if "train" in key}
@@ -74,9 +76,10 @@ class Solver:
         total_epoch = self.args.epochs
 
         # freeze params of network except FC layer
-        for name, param in self.net.named_parameters():
-            if name != "linear.1.weight" and name != "linear.1.bias":
-                param.requires_grad = False
+        if self.args.mode == "train":
+            for name, param in self.net.named_parameters():
+                if name != "linear.1.weight" and name != "linear.1.bias":
+                    param.requires_grad = False
 
         for epoch in range(1, total_epoch + 1):
             print(f"Epoch {epoch}/{total_epoch}")

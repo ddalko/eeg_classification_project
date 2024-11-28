@@ -20,6 +20,8 @@ class Solver:
         self.device = torch.device("cpu")
         if torch.backends.mps.is_available():
             self.device = torch.device("mps")
+        elif torch.cuda.is_available():
+            self.device = f"cuda:{args.gpu}"
 
     def train(self):
         log_tmp = {key: [] for key in self.log_dict.keys() if "train" in key}
@@ -74,10 +76,17 @@ class Solver:
         total_epoch = self.args.epochs
 
         # freeze params of network except FC layer
-        # for name, param in self.net.named_parameters():
-        #     if name != "linear.1.weight" and name != "linear.1.bias":
-        #         param.requires_grad = False
+        if self.args.mode == "train":
+            for name, param in self.net.named_parameters():
+                if name.startswith("2.clshead") or name.startswith("2.fc"):
+                    param.requires_grad = True 
+                    print(f"{name}: requires_grad=True")
+                else:
+                    param.requires_grad = False
+                    print(f"{name}: requires_grad=False")
 
+        best_epoch = 0
+        best_acc = -1e9
         for epoch in range(1, total_epoch + 1):
             print(f"Epoch {epoch}/{total_epoch}")
             # Train
@@ -96,26 +105,29 @@ class Solver:
             # Update scheduler
             self.scheduler.step() if self.scheduler else None
 
-            # Save checkpoint
+            # Save best acc checkpoint
             createFolder(os.path.join(self.args.save_path, "checkpoint"))
-            if epoch % 50 == 0:
+            if best_acc < self.log_dict["val_acc"][-1]:  # latest epoch
+                best_acc = self.log_dict["val_acc"][-1]
+                best_epoch = epoch
                 torch.save(
                     {
-                        "epoch": epoch,
+                        "epoch": best_epoch,
                         "net_state_dict": self.net.state_dict(),
                         "optimizer_state_dict": self.optimizer.state_dict(),
                         "scheduler_state_dict": self.scheduler.state_dict() if self.scheduler else None,
                     },
-                    os.path.join(self.args.save_path, f"checkpoint/{epoch}.tar"),
+                    os.path.join(self.args.save_path, f"checkpoint/best.tar"),
                 )
-                write_json(os.path.join(self.args.save_path, "log_dict.json"), self.log_dict)
 
         # Save args & log_dict
-        self.args.seed = str(torch.manual_seed(self.args.seed))
-        self.args.cuda_seed = self.args.seed
-        self.args.acc = np.round(
-            self.log_dict["val_acc"][-1], 3
-        )  # NOTE: 학습 시작할 때 저장하거나, 다른 metric 있는 상황도 고려
+        if torch.backends.mps.is_available():
+            self.args.seed = str(torch.manual_seed(self.args.seed))
+            self.args.cuda_seed = self.args.seed
+        elif torch.cuda.is_available():
+            self.args.seed = torch.initial_seed()
+            self.args.cuda_seed = torch.cuda.initial_seed()
+        self.args.acc = best_acc
         delattr(self.args, "topo") if hasattr(self.args, "topo") else None
         delattr(self.args, "phase") if hasattr(self.args, "phase") else None
         write_json(os.path.join(self.args.save_path, "args.json"), vars(self.args))
@@ -123,7 +135,7 @@ class Solver:
         print("====================================Finish====================================")
         print(self.net, "\n")
         print_dict(vars(self.args))
-        print(f"Last checkpoint: {os.path.join(self.args.save_path, 'checkpoint', str(epoch) + '.tar')}")
+        print(f"Best acc: {best_acc}, epoch: {best_epoch}, checkpoint: {os.path.join(self.args.save_path, 'checkpoint/best.tar')}")
 
     def test(self):
         print("[Start test]")
