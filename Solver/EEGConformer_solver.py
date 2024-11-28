@@ -74,9 +74,9 @@ class Solver:
         total_epoch = self.args.epochs
 
         # freeze params of network except FC layer
-        for name, param in self.net.named_parameters():
-            if name != "linear.1.weight" and name != "linear.1.bias":
-                param.requires_grad = False
+        # for name, param in self.net.named_parameters():
+        #     if name != "linear.1.weight" and name != "linear.1.bias":
+        #         param.requires_grad = False
 
         for epoch in range(1, total_epoch + 1):
             print(f"Epoch {epoch}/{total_epoch}")

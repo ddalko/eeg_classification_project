@@ -44,7 +44,7 @@ def set_optimizer(args, net):
 
     # Set scheduler
     if args.scheduler:
-        if args.scheduler == 'exp':
+        if args.scheduler == "exp":
             scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.gamma)
         else:
             scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=args.eta_min)
