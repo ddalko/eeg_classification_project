@@ -26,8 +26,10 @@ def make_solver(args, net, train_loader, val_loader):
 def set_criterion(args):
     if args.criterion == "MSE":
         criterion = nn.MSELoss()
-    else:
+    elif args.criterion == "CEE":
         criterion = nn.CrossEntropyLoss()
+    # elif args.criterion == "FOCAL":
+    #     criterion =
     return criterion
 
 
@@ -39,7 +41,7 @@ def set_optimizer(args, net):
 
     # Set scheduler
     if args.scheduler:
-        if args.scheduler == 'exp':
+        if args.scheduler == "exp":
             scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.gamma)
         else:
             scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=args.eta_min)

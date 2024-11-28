@@ -2,33 +2,41 @@ import torch
 import torch.nn as nn
 
 from Net import *
+from Net.EEGConformer_net import Conformer
 
 
 def build_net(args, shape):
+    device = torch.device("cpu")
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+
+    print(f"Using device: {device}")
     print("[Build Net]")
 
-    net = EEGNet_net.EEGNet(args, shape)
+    if args.net == "EEGNet":
+        net = EEGNet_net.EEGNet(args, shape)
+        # load pretrained parameters
+        if args.mode == "train":
+            param = torch.load(f"./pretrained/{args.train_subject[0]-1}/checkpoint/500.tar", map_location=device)
+            net.load_state_dict(param["net_state_dict"])
 
-    # load pretrained parameters
-    if args.mode == 'train':
-        param = torch.load(f"./pretrained/{args.train_subject[0]-1}/checkpoint/500.tar")
-        net.load_state_dict(param['net_state_dict'])
-
-    # test only
+        # test only
+        else:
+            param = torch.load(f"./tl/{args.train_subject[0]-1}/checkpoint/50.tar", map_location=device)
+            net.load_state_dict(param["net_state_dict"])
+    elif args.net == "EEGConformer":
+        net = Conformer()
     else:
-        param = torch.load(f"./tl/{args.train_subject[0]-1}/checkpoint/50.tar")
-        net.load_state_dict(param['net_state_dict'])
+        raise "args.net must be one of values ['EEGNet', 'EEGConformer']"
 
     # Set GPU
-    if args.gpu != 'cpu':
-        assert torch.cuda.is_available(), "Check GPU"
+    if args.gpu != "cpu":
+        assert torch.backends.mps.is_available(), "Check MPS"
         if args.gpu == "multi":
-            device = args.gpu
             net = nn.DataParallel(net)
-        else:
-            device = torch.device(f'cuda:{args.gpu}')
-            torch.cuda.set_device(device)
-        net.cuda()
+        # else:
+        #     torch.cuda.set_device(device)
+        net.to(device)
 
     # Set CPU
     else:
