@@ -6,7 +6,6 @@ from Net.EEGNet_net import EEGNet
 from Net.DatEEGNet_net import EEGNetWithDAT
 from Net.EEGConformer_net import Conformer
 from Net.ATCNet_net import ATCNet
-from Net.FBCNet_net import FBCNet
 
 
 def build_net(args, shape):
@@ -32,6 +31,10 @@ def build_net(args, shape):
             net.load_state_dict(param["net_state_dict"])
     elif args.net == "DatEEGNet":
         net = EEGNetWithDAT(args, shape)
+        if args.mode == "test":
+            param = torch.load(f"{args.pretrained_path}", map_location=device)
+            net.load_state_dict(param["net_state_dict"])
+
     elif args.net == "EEGConformer":
         net = Conformer()
     elif args.net == "ATCNet":

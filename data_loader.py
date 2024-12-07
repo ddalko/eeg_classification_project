@@ -178,7 +178,7 @@ def data_loader(args):
     else:
         dataset_type = PretrainDataset if args.mode == "pretrain" else CustomDataset
     trainset = dataset_type(args)
-    train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=False, drop_last=False, num_workers=0)
+    train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True, drop_last=False, num_workers=0)
 
     # Load val data
     args.phase = "val"

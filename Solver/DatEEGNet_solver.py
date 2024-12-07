@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import torch
+from torch.utils.tensorboard import SummaryWriter
 from metrics import cal_log
 from utils import print_update, createFolder, write_json, print_dict
 
@@ -22,8 +23,9 @@ class Solver:
             self.device = torch.device("mps")
         elif torch.cuda.is_available():
             self.device = f"cuda:{args.gpu}"
+        self.writer = SummaryWriter(log_dir=os.path.join(args.save_path, "tensorboard"))
 
-    def train(self):
+    def train(self, epoch):
         log_tmp = {key: [] for key in self.log_dict.keys() if "train" in key}
         self.net.train()
         for i, data in enumerate(self.train_loader):
@@ -39,7 +41,7 @@ class Solver:
             task_output, domain_output = self.net(inputs)
             task_loss = self.criterion(task_output, task_labels)
             domain_loss = self.criterion(domain_output, domain_labels)
-            total_loss = task_loss + domain_loss
+            total_loss = task_loss + 0.1 * domain_loss
 
             # Backward
             total_loss.backward()
@@ -63,8 +65,9 @@ class Solver:
         # Record log
         for key in log_tmp.keys():
             self.log_dict[key].append(np.mean(log_tmp[key]))
+            self.writer.add_scalar(f"Train/{key}", self.log_dict[key][-1], epoch)
 
-    def val(self):
+    def val(self, epoch):
         log_tmp = {key: [] for key in self.log_dict.keys() if "val" in key}
         self.net.eval()
         with torch.no_grad():
@@ -94,6 +97,7 @@ class Solver:
             # Record log
             for key in log_tmp.keys():
                 self.log_dict[key].append(np.mean(log_tmp[key]))
+                self.writer.add_scalar(f"Val/{key}", self.log_dict[key][-1], epoch)
 
     def experiment(self):
         print("[Start experiment]")
@@ -105,13 +109,15 @@ class Solver:
         #         if name != "linear.1.weight" and name != "linear.1.bias":
         #             param.requires_grad = False
 
+        best_epoch = 0
+        best_acc = -1e9
         for epoch in range(1, total_epoch + 1):
             print(f"Epoch {epoch}/{total_epoch}")
             # Train
-            self.train()
+            self.train(epoch)
 
             # Validation
-            self.val()
+            self.val(epoch)
 
             # Print
             print("=>", end=" ")
@@ -125,17 +131,19 @@ class Solver:
 
             # Save checkpoint
             createFolder(os.path.join(self.args.save_path, "checkpoint"))
-            if epoch % 50 == 0:
+            if best_acc < self.log_dict["val_acc"][-1]:  # latest epoch
+                best_acc = self.log_dict["val_acc"][-1]
+                best_epoch = epoch
                 torch.save(
                     {
-                        "epoch": epoch,
+                        "epoch": best_epoch,
                         "net_state_dict": self.net.state_dict(),
                         "optimizer_state_dict": self.optimizer.state_dict(),
                         "scheduler_state_dict": self.scheduler.state_dict() if self.scheduler else None,
                     },
-                    os.path.join(self.args.save_path, f"checkpoint/{epoch}.tar"),
+                    os.path.join(self.args.save_path, f"checkpoint/best.tar"),
                 )
-                write_json(os.path.join(self.args.save_path, "log_dict.json"), self.log_dict)
+
 
         # Save args & log_dict
         self.args.seed = str(torch.manual_seed(self.args.seed))
@@ -150,14 +158,14 @@ class Solver:
         print("====================================Finish====================================")
         print(self.net, "\n")
         print_dict(vars(self.args))
-        print(f"Last checkpoint: {os.path.join(self.args.save_path, 'checkpoint', str(epoch) + '.tar')}")
+        print(f"Best acc: {best_acc}, epoch: {best_epoch}, checkpoint: {os.path.join(self.args.save_path, 'checkpoint/best.tar')}")
 
     def test(self):
         print("[Start test]")
         for epoch in range(1, 2):
 
             # Validation
-            self.val()
+            self.val(epoch)
 
             # Print
             print("=>", end=" ")

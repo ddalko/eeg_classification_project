@@ -1,0 +1,495 @@
+
+PID: 6852
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:12
+mode: test
+pretrained_path: result/241208_DatEEGNet/1/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [1]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/1
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.2511, domain_loss: 0.3134
+=> test acc: [0.8229166666666666]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 6982
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:15
+mode: test
+pretrained_path: result/241208_DatEEGNet/2/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [2]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/2
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.5252, domain_loss: 0.1671
+=> test acc: [0.6041666666666666]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 7098
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:19
+mode: test
+pretrained_path: result/241208_DatEEGNet/3/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [3]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/3
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.1956, domain_loss: 0.2730
+=> test acc: [0.8854166666666666]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 7234
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:23
+mode: test
+pretrained_path: result/241208_DatEEGNet/4/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [4]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/4
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.4164, domain_loss: 0.2430
+=> test acc: [0.71875]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 7972
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:27
+mode: test
+pretrained_path: result/241208_DatEEGNet/5/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [5]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/5
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.4032, domain_loss: 0.1850
+=> test acc: [0.7222222222222222]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 8373
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:31
+mode: test
+pretrained_path: result/241208_DatEEGNet/6/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [6]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/6
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.5167, domain_loss: 0.2613
+=> test acc: [0.6180555555555556]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 8569
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:35
+mode: test
+pretrained_path: result/241208_DatEEGNet/7/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [7]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/7
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.2662, domain_loss: 0.3288
+=> test acc: [0.8402777777777778]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 8693
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:39
+mode: test
+pretrained_path: result/241208_DatEEGNet/8/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [8]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/8
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.2588, domain_loss: 0.2068
+=> test acc: [0.8472222222222222]
+====================================Finish====================================
+Total time: 00:00:00
+
+PID: 8824
+
+Python version: 3.8.11
+Pytorch version: 2.4.1+cu121
+
+date: 2024-12-08
+time: 07:08:42
+mode: test
+pretrained_path: result/241208_DatEEGNet/9/checkpoint/best.tar
+train_cont_path: None
+paradigm: session
+net: DatEEGNet
+dataset: bcic4_2a
+train_subject: [9]
+band: [[0, 40]]
+chans: all
+labels: [0, 1, 2, 3]
+load_all: False
+criterion: FOCAL
+opt: Adam
+metrics: ['loss', 'acc']
+lr: 0.002
+wd: 0.002
+epochs: 500
+batch_size: 288
+scheduler: cos
+eta_min: 0.0
+save_path: ./result/241208_DatEEGNet_test/9
+stamp: 241208_DatEEGNet_test
+ratio: None
+gpu: 0
+seed: 42
+print_step: 5
+signature: None
+
+[Control randomness]
+seed: 42
+
+[Load data]
+train_set size: torch.Size([2592, 1, 22, 1125])
+val_set size: torch.Size([288, 1, 22, 1125])
+
+Using device: cuda:0
+[Build Net]
+device: cuda:0
+
+[Make solver]
+
+[Start test]
+
+task_loss: 0.3559, domain_loss: 0.2117
+=> test acc: [0.7569444444444444]
+====================================Finish====================================
+Total time: 00:00:00

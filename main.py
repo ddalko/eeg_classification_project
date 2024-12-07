@@ -22,6 +22,10 @@ def main():
     # make solver (runner)
     solver = make_solver(args, net, train_loader, val_loader)
 
+    if args.mode == "test":
+        solver.test()
+        return
+
     # train
     solver.experiment()
 
