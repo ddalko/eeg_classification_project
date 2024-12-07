@@ -3,8 +3,10 @@ import torch.nn as nn
 
 from Net import *
 from Net.EEGNet_net import EEGNet
+from Net.DatEEGNet_net import EEGNetWithDAT
 from Net.EEGConformer_net import Conformer
 from Net.ATCNet_net import ATCNet
+from Net.FBCNet_net import FBCNet
 
 
 def build_net(args, shape):
@@ -28,14 +30,28 @@ def build_net(args, shape):
         else:
             param = torch.load(f"./tl/{args.train_subject[0]-1}/checkpoint/50.tar", map_location=device)
             net.load_state_dict(param["net_state_dict"])
+    elif args.net == "DatEEGNet":
+        net = EEGNetWithDAT(args, shape)
     elif args.net == "EEGConformer":
         net = Conformer()
     elif args.net == "ATCNet":
         net = ATCNet()
+    elif args.net == "FBCNet":
+        config = {
+            "nChan": 22,
+            "nTime": 1000,
+            "dropoutP": 0.5,
+            "nBands": 1,
+            "m": 32,
+            "temporalLayer": "LogVarLayer",
+            "nClass": 4,
+            "doWeightNorm": True,
+        }
+        net = FBCNet(nChan=config["nChan"], nBands=config["nBands"])
     else:
-        raise "args.net must be one of values ['EEGNet', 'EEGConformer', 'ATCNet']"
+        raise "args.net must be one of values ['EEGNet', 'EEGConformer', 'ATCNet', 'FBCNet']"
 
-    if args.net != "EEGNet" and args.mode == "train":
+    if args.net not in ["EEGNet", "DatEEGNet"] and args.mode == "train":
         param = torch.load(args.pretrained_path, map_location=device)
         net.load_state_dict(param["net_state_dict"])
     # Set GPU
