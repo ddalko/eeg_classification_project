@@ -74,7 +74,7 @@ class Solver:
             # Record log
             for key in log_tmp.keys():
                 self.log_dict[key].append(np.mean(log_tmp[key]))
-                self.writer.add_scalar(f"Val/{key}", self.log_dict[key][-1], epoch)
+            self.writer.add_scalar(f"Val/{key}", self.log_dict[key][-1], epoch)
 
 
     def experiment(self):
@@ -84,7 +84,7 @@ class Solver:
         # freeze params of network except FC layer
         if self.args.mode == "train":
             for name, param in self.net.named_parameters():
-                if name.startswith("classifier"):
+                if name.startswith("cls_head"):
                     param.requires_grad = True 
                     print(f"{name}: requires_grad=True")
                 else:
